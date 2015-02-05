@@ -35,6 +35,7 @@ def shopping_cart():
     dictionary = {}
     listofcarts = session.get("cart", [])
    
+    #if there are no items in the cart
     if not listofcarts:
         flash("You have 0 items in your cart")  
 
@@ -49,6 +50,7 @@ def shopping_cart():
         quantity = dictionary[melon.id]["quantity"]
         total = melon.price * quantity
         total_cart += total
+
 
     
 
