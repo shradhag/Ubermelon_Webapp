@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
-{% if melon_list %}
 <table class="table table-striped">
     <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
-    {% for melon in melon_list %}
+    {% for melon in dictionary %}
     <tr>
-        <td><a href="melon/{{melon.id}}" target:"_blank"{{melon.common_name}}</td><td>5</td>
-        <td>{{ totalquantity[melon.id]["quantity"] }}</td>
-        <td>{{ totalquantity[melon.id][] }}</td>
-        <td>{{ totalquantity[melon.id][] }}</td>
+        <td>{{ dictionary[melon]["name"] }}</td>
+        <td>{{ dictionary[melon]["quantity"] }}</td>
+        <td>{{ dictionary[melon]["price"] }}</td>
+        <td>{{ dictionary[melon]["price"] * dictionary[melon]["quantity"]}}</td>
     </tr>
     {% endfor %}
 </table>
-<h3>{{ total_cart }}</h3>
+<h3> Total:{{ totalcart }}</h3>
 <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
-{% endif %}
 {% endblock %}

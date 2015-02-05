@@ -7,7 +7,7 @@
     <p> {{ display_melon.price_str() }} </p>
     </div>
 <form action="/add_to_cart" method="GET">
-    <a class="btn btn-primary" href="/add_to_cart/{{display_melon.id}}">Add to Cart</a>
+    <a class="btn btn-primary" href="/add_to_cart/{{display_melon.id}}" value="{{display_melon.id}}">Add to Cart</a>
 </form>
 <div class="melon-details">
     <h3>Product details</h3>

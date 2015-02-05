@@ -24,6 +24,7 @@ def show_melon(id):
     """This page shows the details of a given melon, as well as giving an
     option to buy the melon."""
     melon = model.get_melon_by_id(id)
+    print melon
     return render_template("melon_details.html",
                   display_melon = melon)
 
@@ -33,30 +34,15 @@ def shopping_cart():
     list held in the session that contains all the melons to be added. Check
     accompanying screenshots for details."""
     dictionary = {}
-    listofcarts = session.get("cart", [])
-   
-    #if there are no items in the cart
-    if not listofcarts:
-        flash("You have 0 items in your cart")  
+    total = 0
 
-    for melon_id, value in listofcarts:
-        dictionary[melon_id]["quantity"] = dictionary[melon_id].get("quantity", 0) + 1
-    melon_list = [model.get_melon_by_id(melon_id) for melon_id in dictionary]
+    for key in session['cart']:
+        melon = model.get_melon_by_id(key)
+        dictionary[key] = {"name": melon.common_name, "quantity": session['cart'][key], "price": melon.price }
+        total = total + dictionary[key]["price"] * dictionary[key]["quantity"]
 
 
-    #Creating a loop to return your order total based on the quantity of melons and price of each melon
-    total_cart=0
-    for melon in melon_list:
-        quantity = dictionary[melon.id]["quantity"]
-        total = melon.price * quantity
-        total_cart += total
-
-
-    
-
-
-
-    return render_template("cart.html", melon_list = melon_list)
+    return render_template("cart.html", dictionary= dictionary, totalcart = total)
 
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):
@@ -66,8 +52,17 @@ def add_to_cart(id):
     Intended behavior: when a melon is added to a cart, redirect them to the
     shopping cart page, while displaying the message
     "Successfully added to cart" """
-    melon = model.get_melon_by_id(id)
-    return render_template("melon_details.html", display_melon = melon)
+    string_id = str(id)
+    if 'cart' in session:
+        session['cart'][string_id] = session['cart'].get(string_id, 0) + 1
+
+    else:
+        session['cart']= {string_id: 1}
+
+
+    display_melon = model.get_melon_by_id(id)
+    flash("You added a " + display_melon.common_name + " to your cart")
+    return redirect("/cart")
     
 
 
