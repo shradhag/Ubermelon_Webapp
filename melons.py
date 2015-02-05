@@ -1,4 +1,4 @@
-from flask import Flask, request, session, render_template, g, redirect, url_for, flash
+from flask import Flask, request, session, render_template, make_response, g, redirect, url_for, flash
 import model
 import jinja2
 import os
@@ -24,7 +24,6 @@ def show_melon(id):
     """This page shows the details of a given melon, as well as giving an
     option to buy the melon."""
     melon = model.get_melon_by_id(id)
-    print melon
     return render_template("melon_details.html",
                   display_melon = melon)
 
@@ -33,7 +32,29 @@ def shopping_cart():
     """TODO: Display the contents of the shopping cart. The shopping cart is a
     list held in the session that contains all the melons to be added. Check
     accompanying screenshots for details."""
-    return render_template("cart.html")
+    dictionary = {}
+    listofcarts = session.get("cart", [])
+   
+    if not listofcarts:
+        flash("You have 0 items in your cart")  
+
+    for melon_id, value in listofcarts:
+        dictionary[melon_id]["quantity"] = dictionary[melon_id].get("quantity", 0) + 1
+    melon_list = [model.get_melon_by_id(melon_id) for melon_id in dictionary]
+
+
+    #Creating a loop to return your order total based on the quantity of melons and price of each melon
+    total_cart=0
+    for melon in melon_list:
+        quantity = dictionary[melon.id]["quantity"]
+        total = melon.price * quantity
+        total_cart += total
+
+    
+
+
+
+    return render_template("cart.html", melon_list = melon_list)
 
 @app.route("/add_to_cart/<int:id>")
 def add_to_cart(id):
@@ -43,8 +64,9 @@ def add_to_cart(id):
     Intended behavior: when a melon is added to a cart, redirect them to the
     shopping cart page, while displaying the message
     "Successfully added to cart" """
-
-    return "Oops! This needs to be implemented!"
+    melon = model.get_melon_by_id(id)
+    return render_template("melon_details.html", display_melon = melon)
+    
 
 
 @app.route("/login", methods=["GET"])
@@ -54,9 +76,13 @@ def show_login():
 
 @app.route("/login", methods=["POST"])
 def process_login():
-    """TODO: Receive the user's login credentials located in the 'request.form'
-    dictionary, look up the user, and store them in the session."""
-    return "Oops! This needs to be implemented"
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user_id = authenticate(email, password)
+
+    if user_id:
+        session['user_id'] = user_id
 
 
 @app.route("/checkout")

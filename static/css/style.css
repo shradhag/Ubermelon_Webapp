@@ -30,6 +30,11 @@ img.product-img {
     max-width: 400px;
 }
 
+img.melon-cart {
+  height: 22px;
+}
+
+
 div.cart {
     display: inline-block;
     vertical-align: top;
