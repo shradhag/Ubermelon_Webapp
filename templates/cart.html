@@ -1,13 +1,19 @@
 {% extends 'base.html' %}
 {% block body %}
 <table class="table table-striped">
+
     <tr><th>Melon Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>
+
     {% for melon in dictionary %}
     <tr>
         <td>{{ dictionary[melon]["name"] }}</td>
         <td>{{ dictionary[melon]["quantity"] }}</td>
         <td>{{ dictionary[melon]["price"] }}</td>
         <td>{{ dictionary[melon]["price"] * dictionary[melon]["quantity"]}}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td></td>
     </tr>
     {% endfor %}
 </table>

@@ -35,11 +35,15 @@ def shopping_cart():
     accompanying screenshots for details."""
     dictionary = {}
     total = 0
+    if not session:
+        flash("Your cart is empty.")
 
-    for key in session['cart']:
-        melon = model.get_melon_by_id(key)
-        dictionary[key] = {"name": melon.common_name, "quantity": session['cart'][key], "price": melon.price }
-        total = total + dictionary[key]["price"] * dictionary[key]["quantity"]
+    else:
+
+        for key in session['cart']:
+            melon = model.get_melon_by_id(key)
+            dictionary[key] = {"name": melon.common_name, "quantity": session['cart'][key], "price": melon.price }
+            total = total + dictionary[key]["price"] * dictionary[key]["quantity"]
 
 
     return render_template("cart.html", dictionary= dictionary, totalcart = total)
@@ -53,6 +57,7 @@ def add_to_cart(id):
     shopping cart page, while displaying the message
     "Successfully added to cart" """
     string_id = str(id)
+  
     if 'cart' in session:
         session['cart'][string_id] = session['cart'].get(string_id, 0) + 1
 
@@ -76,10 +81,11 @@ def process_login():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    user_id = authenticate(email, password)
+    if email in session:
+        flash("You are logged in")
+    else:
+        flash("Please sign up")
 
-    if user_id:
-        session['user_id'] = user_id
 
 
 @app.route("/checkout")
